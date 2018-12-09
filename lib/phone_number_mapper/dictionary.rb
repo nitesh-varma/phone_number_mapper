@@ -1,6 +1,5 @@
 module PhoneNumberMapper
   class Dictionary
-    extend Memoist
 
     FILE_PATH = File.join(File.dirname(__FILE__), '../../files/dictionary.txt')
 
@@ -14,7 +13,6 @@ module PhoneNumberMapper
         end
       end
     end
-    memoize :data
 
   end
 end
