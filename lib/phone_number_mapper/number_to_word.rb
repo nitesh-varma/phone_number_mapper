@@ -21,26 +21,34 @@ module PhoneNumberMapper
 
     def words
       return incorrect_number_message unless valid_number?
-
-      values = {}.tap do |values|
+      combinations = {}.tap do |combinations|
         (1..9).each do |n|
           array_1 = number_to_letters[0..n]
           array_2 = number_to_letters[(n + 1)..9]
-          puts "=======#{array_1}======="
-          puts "=======#{array_2}======="
           unless array_1.empty? || array_2.empty?
             combination_1 = array_1[0].product(*array_1[1..array_1.length]).map(&:join)
             combination_2 = array_2[0].product(*array_2[1..array_2.length]).map(&:join)
             unless combination_1.nil? || combination_2.nil?
-              values[n] = [(combination_1 & (dictionary[n + 2] || [])), (combination_2 & (dictionary[9 - n] || []))]
+              combinations[n] = [(combination_1 & (dictionary[n + 1] || [])), (combination_2 & (dictionary[9 - n] || []))]
             end
           end
         end
       end
-      puts values
+      word_combinations(combinations)
     end
 
     private
+
+    def word_combinations(combinations)
+      [].tap do |words|
+        combinations.values.each do |values|
+          values[0].product(values[1]).each do |value|
+            words << value
+          end
+        end
+        words.map!{ |words| [([words.join('')] & dictionary[10]).first, words].compact.first }
+      end
+    end
 
     def number_to_letters
       number.digits.reverse.map{ |digit| MAPPING_LETTERS[digit] }
