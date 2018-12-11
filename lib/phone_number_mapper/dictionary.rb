@@ -3,6 +3,7 @@ module PhoneNumberMapper
 
     FILE_PATH = File.join(File.dirname(__FILE__), '../../files/dictionary.txt')
 
+    # Create a hash with key as length of string and associated words in it's value as array
     def data
       {}.tap do |dictionary|
         File.open(FILE_PATH).each_line do |line|

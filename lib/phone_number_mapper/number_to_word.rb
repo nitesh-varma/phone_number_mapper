@@ -19,6 +19,7 @@ module PhoneNumberMapper
       @number = number
     end
 
+    # Join each length of words using cross product and match combination with dictionary.
     def words
       return incorrect_number_message unless valid_number?
       combinations = {}.tap do |combinations|
@@ -29,6 +30,8 @@ module PhoneNumberMapper
             combination_1 = array_1[0].product(*array_1[1..array_1.length]).map(&:join)
             combination_2 = array_2[0].product(*array_2[1..array_2.length]).map(&:join)
             unless combination_1.nil? || combination_2.nil?
+              # Store combinations i.e pair of words which are present in dictionary
+              # Using intersection between arrays to find common words between combination of words & words from dictionary
               combinations[n] = [(combination_1 & (dictionary[n + 1] || [])), (combination_2 & (dictionary[9 - n] || []))]
             end
           end
@@ -39,6 +42,7 @@ module PhoneNumberMapper
 
     private
 
+    # Combine the matched words and select the words matching in dictionary
     def word_combinations(combinations)
       [].tap do |words|
         combinations.values.each do |values|
@@ -50,16 +54,19 @@ module PhoneNumberMapper
       end
     end
 
+    # Convert each number with MAPPING_LETTERS
     def number_to_letters
       number.digits.reverse.map{ |digit| MAPPING_LETTERS[digit] }
     end
     memoize :number_to_letters
 
+    # Hash of words from dictionary
     def dictionary
       Dictionary.new.data
     end
     memoize :dictionary
 
+    # Accept positive integer with 10 digits without 0 & 1
     def valid_number?
       number.is_a?(Integer) &&
       number.positive? &&
